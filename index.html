@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Web Experience</title>
+    <title>Loading Animation and Ads</title>
     <style>
         /* Основные стили */
         body {
@@ -15,196 +15,77 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            flex-direction: column;
             overflow: hidden;
             text-align: center;
         }
 
-        /* Стиль анимации запуска */
-        .launching {
-            font-size: 30px;
-            font-weight: bold;
-            color: #333;
-            display: none;
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        /* Стиль текста "Approved by Google Play" */
-        #approved {
-            font-size: 32px;
-            color: #34a853;
-            display: none;
-            font-weight: bold;
-            position: relative;
-        }
-
-        #approved:before {
-            content: "✔";
-            color: green;
-            position: absolute;
-            left: -40px;
-            top: -5px;
-            font-size: 40px;
-        }
-
-        #approved .underline {
-            display: inline-block;
-            position: relative;
-            color: #34a853;
-        }
-
-        #approved .underline:after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background-color: #34a853;
-            bottom: -4px;
-            left: 0;
-            animation: underlineAnimation 2s ease-in-out infinite;
-        }
-
-        @keyframes underlineAnimation {
-            0% {
-                width: 0;
-            }
-            50% {
-                width: 100%;
-            }
-            100% {
-                width: 0;
-            }
-        }
-
-        /* Стиль для кнопки и вопроса */
-        #question {
+        /* Стиль для текста IP */
+        #ip {
             font-size: 24px;
             color: #333;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Анимация загрузки */
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Стиль для сообщений/рекламы */
+        .ad-message {
+            font-size: 20px;
+            color: #ff6347;
+            background-color: #fff;
+            border: 2px solid #ff6347;
+            border-radius: 10px;
+            padding: 15px;
+            width: 80%;
             margin-top: 20px;
             display: none;
-        }
-
-        #sendButton {
-            padding: 15px 30px;
-            background-color: #4CAF50;
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        #sendButton:hover {
-            background-color: #45a049;
-        }
-
-        /* Стиль для ошибки */
-        #error {
-            font-size: 28px;
-            color: #ff4444;
-            display: none;
-            margin-top: 50px;
-        }
-
-        /* Анимация появления */
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
-
-        /* Анимация для кнопки */
-        #sendButton {
-            animation: fadeIn 1s ease-in-out;
         }
     </style>
 </head>
 <body>
 
-    <!-- Стартовая анимация -->
-    <div class="launching" id="launchingText">Launching...</div>
+    <!-- Текст с IP -->
+    <div id="ip">IP: Кострома, Шагова 40</div>
 
-    <!-- Текст "Approved by Google Play" -->
-    <div id="approved">
-        <span class="underline">Approved by Google Play</span>
-    </div>
+    <!-- Анимация загрузки -->
+    <div class="loader"></div>
 
-    <!-- Вопрос на отправку данных -->
-    <div id="question">
-        <p>Отправить все свои данные на проверку?</p>
-        <button id="sendButton">Да, отправить</button>
-    </div>
-
-    <!-- Ошибка -->
-    <div id="error">
-        ERROR 404: <br> Кажется, вы находитесь в другой стране от собеседника.
-    </div>
+    <!-- Сообщения рекламы -->
+    <div class="ad-message" id="adMessage">Ваши деньги вложены на нас!</div>
 
     <script>
-        // Функция для показа анимации запуска
-        function showLaunchText() {
-            const launchText = document.getElementById('launchingText');
-            launchText.style.display = 'block';
+        // Функция для отображения рекламы
+        function showAd() {
+            const adMessage = document.getElementById('adMessage');
+            adMessage.style.display = 'block';
 
-            // Скрыть текст через 1.5 секунды
+            // Скрыть рекламу через 3 секунды
             setTimeout(() => {
-                launchText.style.display = 'none';
-                showApprovedText();
-            }, 1500); // Задержка в 1.5 секунды
+                adMessage.style.display = 'none';
+            }, 3000); // Показываем рекламу на 3 секунды
         }
 
-        // Функция для показа "Approved by Google Play"
-        function showApprovedText() {
-            const approvedText = document.getElementById('approved');
-            approvedText.style.display = 'block';
-            approvedText.classList.add('fade-in');
+        // Интервал для появления сообщений/рекламы
+        setInterval(showAd, Math.random() * (10000 - 5000) + 5000); // Появление с интервалом от 5 до 10 секунд
 
-            // После 2.5 секунд показываем вопрос
-            setTimeout(() => {
-                showQuestion();
-            }, 2500); // Задержка перед появлением вопроса
-        }
-
-        // Функция для показа вопроса
-        function showQuestion() {
-            const question = document.getElementById('question');
-            question.style.display = 'block';
-            
-            // Автоматическое нажатие на кнопку через 0.5 секунды
-            setTimeout(() => {
-                document.getElementById('sendButton').click();
-            }, 500); // Задержка на 0.5 секунд
-        }
-
-        // Обработчик для кнопки "Да, отправить"
-        document.getElementById('sendButton').addEventListener('click', function() {
-            // Показать анимацию загрузки
-            setTimeout(() => {
-                showLoading();
-            }, 1000); // Задержка перед загрузкой
-        });
-
-        // Функция для показа анимации загрузки
-        function showLoading() {
-            document.getElementById('launchingText').style.display = 'block';
-
-            // После 2 секунд показываем ошибку
-            setTimeout(() => {
-                showError();
-            }, 2000);
-        }
-
-        // Функция для отображения ошибки
-        function showError() {
-            document.getElementById('launchingText').style.display = 'none';
-            document.getElementById('error').style.display = 'block';
-        }
-
-        // Запускаем начальную анимацию
-        showLaunchText();
     </script>
 
 </body>
