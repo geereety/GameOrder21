@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Hub</title>
+    <title>Online Games for Friends</title>
     <style>
         /* Основные стили */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f0f0f0;
@@ -20,10 +20,68 @@
             overflow: hidden;
         }
 
+        /* Заголовок сайта */
+        #title {
+            font-size: 36px;
+            color: #333;
+            font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 30px;
+        }
+
+        /* Стиль для сообщений */
+        .popup {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 20px;
+            background-color: #ffeb3b;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .popup h3 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .popup .message {
+            margin: 10px 0;
+        }
+
+        .popup .close-btn {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 8px 12px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .popup .close-btn:hover {
+            background-color: #e64a19;
+        }
+
+        /* Стиль для ошибки в конце */
+        #final-message {
+            font-size: 24px;
+            color: #ff4444;
+            display: none;
+            margin-top: 30px;
+        }
+
+        /* Логика загрузки */
         #loading {
             font-size: 36px;
             color: #333;
-            margin-top: 20px;
         }
 
         #timer {
@@ -31,209 +89,80 @@
             color: #ff5733;
             margin-top: 20px;
         }
-
-        #message {
-            font-size: 36px;
-            color: #ff5733;
-            margin-top: 20px;
-            display: none;
-        }
-
-        #games-container {
-            display: none;
-            width: 90%;
-            margin-top: 50px;
-            height: 500px;
-            overflow-y: auto;
-        }
-
-        .game-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #fff;
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .game-item:hover {
-            transform: scale(1.05);
-        }
-
-        .game-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
-        }
-
-        .game-info {
-            flex-grow: 1;
-            margin-left: 20px;
-            text-align: left;
-        }
-
-        .game-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .game-description {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .game-rating {
-            margin-top: 5px;
-            color: #ffcc00;
-        }
-
-        .game-button {
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .game-button:hover {
-            background-color: #218838;
-        }
-
-        #game-search {
-            margin-top: 20px;
-            width: 90%;
-            padding: 10px;
-            font-size: 18px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
     </style>
 </head>
 <body>
 
+    <!-- Заголовок -->
+    <div id="title">Online Games for Friends by Phone</div>
+
     <!-- Страница загрузки -->
     <div id="loading">
         <p>Loading...</p>
-        <div id="timer">Timer: 20</div>
+        <div id="timer">Timer: 30</div>
     </div>
 
-    <!-- Сообщение после таймера -->
-    <div id="message">We will kill you ;)</div>
+    <!-- Сообщение от магазина -->
+    <div id="popup-1" class="popup">
+        <h3>RusiaSewSeX</h3>
+        <p class="message">You won a buttocks massage! Very precise!</p>
+        <button class="close-btn" onclick="closePopup(1)">X</button>
+    </div>
 
-    <!-- Список игр -->
-    <div id="games-container">
-        <h2>Online Games Collection</h2>
-        <input id="game-search" type="text" placeholder="Search games...">
+    <!-- Реклама вибраторов -->
+    <div id="popup-2" class="popup">
+        <h3>Special Offer</h3>
+        <p class="message">Buy 5 vibrators if you don't have a man.</p>
+        <button class="close-btn" onclick="closePopup(2)">X</button>
+    </div>
 
-        <!-- Список игр -->
-        <div id="games-list"></div>
+    <!-- Финальное сообщение -->
+    <div id="final-message">
+        ERROR. You are in Russia, while another user is in Estonia. It is impossible to play by voice across countries. Try again later...
     </div>
 
     <script>
-        // Таймер и логика появления сообщения
-        let timer = 20;
+        // Таймер и логика
+        let timer = 30;
         const timerElement = document.getElementById('timer');
-        const messageElement = document.getElementById('message');
-        const loadingElement = document.getElementById('loading');
-        const gamesContainer = document.getElementById('games-container');
-        const gamesList = document.getElementById('games-list');
-        
-        // Пример данных для игр
-        const games = [
-            {
-                title: "Clash Royale",
-                description: "A fast-paced real-time strategy game where you collect cards and battle with other players.",
-                rating: 4.8,
-                imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/47/Clash_Royale_Logo.png",
-                storeLink: "https://play.google.com/store/apps/details?id=com.supercell.clashroyale"
-            },
-            {
-                title: "Among Us",
-                description: "A multiplayer game where you and your friends must figure out who the imposter is.",
-                rating: 4.5,
-                imageUrl: "https://upload.wikimedia.org/wikipedia/commons/d/d4/Among_Us_Logo.png",
-                storeLink: "https://play.google.com/store/apps/details?id=com.innersloth.spacemafia"
-            },
-            {
-                title: "PUBG Mobile",
-                description: "A battle royale game where players fight to be the last one standing.",
-                rating: 4.2,
-                imageUrl: "https://upload.wikimedia.org/wikipedia/commons/1/1b/PUBG_Mobile_logo.png",
-                storeLink: "https://play.google.com/store/apps/details?id=com.tencent.ig"
-            }
-        ];
-
-        // Отображение списка игр
-        function displayGames(games) {
-            gamesList.innerHTML = '';
-            games.forEach(game => {
-                const gameItem = document.createElement('div');
-                gameItem.classList.add('game-item');
-
-                const gameImage = document.createElement('img');
-                gameImage.classList.add('game-image');
-                gameImage.src = game.imageUrl;
-                gameItem.appendChild(gameImage);
-
-                const gameInfo = document.createElement('div');
-                gameInfo.classList.add('game-info');
-
-                const gameTitle = document.createElement('div');
-                gameTitle.classList.add('game-title');
-                gameTitle.textContent = game.title;
-                gameInfo.appendChild(gameTitle);
-
-                const gameDescription = document.createElement('div');
-                gameDescription.classList.add('game-description');
-                gameDescription.textContent = game.description;
-                gameInfo.appendChild(gameDescription);
-
-                const gameRating = document.createElement('div');
-                gameRating.classList.add('game-rating');
-                gameRating.textContent = `Rating: ${game.rating} ⭐`;
-                gameInfo.appendChild(gameRating);
-
-                const gameButton = document.createElement('button');
-                gameButton.classList.add('game-button');
-                gameButton.textContent = 'Download';
-                gameButton.onclick = () => window.open(game.storeLink, '_blank');
-                gameInfo.appendChild(gameButton);
-
-                gameItem.appendChild(gameInfo);
-                gamesList.appendChild(gameItem);
-            });
-        }
-
-        // Поиск игр
-        const searchInput = document.getElementById('game-search');
-        searchInput.addEventListener('input', function() {
-            const query = searchInput.value.toLowerCase();
-            const filteredGames = games.filter(game => game.title.toLowerCase().includes(query));
-            displayGames(filteredGames);
-        });
-
-        // Таймер и логика отображения
+        const popup1 = document.getElementById('popup-1');
+        const popup2 = document.getElementById('popup-2');
+        const finalMessage = document.getElementById('final-message');
         const countdown = setInterval(() => {
             if (timer > 0) {
                 timer--;
                 timerElement.textContent = `Timer: ${timer}`;
             } else {
                 clearInterval(countdown);
-                loadingElement.style.display = 'none'; // Скрыть загрузку
-                messageElement.style.display = 'block'; // Показать сообщение
-                setTimeout(() => {
-                    messageElement.style.display = 'none'; // Скрыть сообщение сразу
-                    gamesContainer.style.display = 'block'; // Показать игры
-                    displayGames(games); // Отображаем игры
-                }, 1); // Ожидание 1 миллисекунда
+                showFinalMessage();  // Показать финальное сообщение
             }
         }, 1000);
+
+        // Показать сообщение от магазина на 5-й секунде
+        setTimeout(() => {
+            popup1.style.display = 'block';
+        }, 5000);
+
+        // Показать рекламу на 15-й секунде
+        setTimeout(() => {
+            popup2.style.display = 'block';
+        }, 15000);
+
+        // Функция для закрытия popup
+        function closePopup(popupNumber) {
+            if (popupNumber === 1) {
+                popup1.style.display = 'none';
+            } else if (popupNumber === 2) {
+                popup2.style.display = 'none';
+            }
+        }
+
+        // Показать финальное сообщение после 30 секунд
+        function showFinalMessage() {
+            finalMessage.style.display = 'block';
+        }
     </script>
 
 </body>
-</html>
+    </html>
+    
