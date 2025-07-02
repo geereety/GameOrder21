@@ -3,166 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Games for Friends</title>
+    <title>Professional Web Experience</title>
     <style>
         /* Основные стили */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f0f0;
+            background-color: #f4f4f9;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
             height: 100vh;
-            text-align: center;
             overflow: hidden;
+            text-align: center;
         }
 
-        /* Заголовок сайта */
-        #title {
-            font-size: 36px;
-            color: #333;
-            font-family: 'Courier New', Courier, monospace;
-            margin-bottom: 30px;
-        }
-
-        /* Стиль для сообщений */
-        .popup {
-            position: fixed;
-            top: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 20px;
-            background-color: #ffeb3b;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 400px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            display: none;
-            z-index: 1000;
-            font-size: 18px;
-            color: #333;
-        }
-
-        .popup h3 {
-            margin: 0;
+        /* Анимация загрузки */
+        .loading {
             font-size: 24px;
             font-weight: bold;
+            color: #333;
+            display: none;
         }
 
-        .popup .message {
-            margin: 10px 0;
+        /* Стиль текста "Approved by Google Play" */
+        #approved {
+            font-size: 32px;
+            color: #34a853;
+            display: none;
+            font-weight: bold;
+            position: relative;
         }
 
-        .popup .close-btn {
-            background-color: #ff5722;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            padding: 8px 12px;
-            font-size: 18px;
-            cursor: pointer;
+        #approved:before {
+            content: "✔";
+            color: green;
+            position: absolute;
+            left: -40px;
+            top: -5px;
+            font-size: 40px;
         }
 
-        .popup .close-btn:hover {
-            background-color: #e64a19;
+        #approved .underline {
+            display: inline-block;
+            position: relative;
+            color: #34a853;
         }
 
-        /* Стиль для ошибки в конце */
-        #final-message {
+        #approved .underline:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: #34a853;
+            bottom: -4px;
+            left: 0;
+            animation: underlineAnimation 2s ease-in-out infinite;
+        }
+
+        @keyframes underlineAnimation {
+            0% {
+                width: 0;
+            }
+            50% {
+                width: 100%;
+            }
+            100% {
+                width: 0;
+            }
+        }
+
+        /* Стиль для кнопки и вопроса */
+        #question {
             font-size: 24px;
+            color: #333;
+            margin-top: 20px;
+            display: none;
+        }
+
+        #sendButton {
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #sendButton:hover {
+            background-color: #45a049;
+        }
+
+        /* Стиль для ошибки */
+        #error {
+            font-size: 28px;
             color: #ff4444;
             display: none;
-            margin-top: 30px;
+            margin-top: 50px;
         }
 
-        /* Логика загрузки */
-        #loading {
-            font-size: 36px;
-            color: #333;
+        /* Анимация появления */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
         }
 
-        #timer {
-            font-size: 28px;
-            color: #ff5733;
-            margin-top: 20px;
+        /* Анимация для кнопки */
+        #sendButton {
+            animation: fadeIn 1s ease-in-out;
         }
     </style>
 </head>
 <body>
 
-    <!-- Заголовок -->
-    <div id="title">Online Games for Friends by Phone</div>
+    <!-- Анимация загрузки -->
+    <div class="loading" id="loadingText">Launching...</div>
 
-    <!-- Страница загрузки -->
-    <div id="loading">
-        <p>Loading...</p>
-        <div id="timer">Timer: 30</div>
+    <!-- Текст "Approved by Google Play" -->
+    <div id="approved">
+        <span class="underline">Approved by Google Play</span>
     </div>
 
-    <!-- Сообщение от магазина -->
-    <div id="popup-1" class="popup">
-        <h3>RusiaSewSeX</h3>
-        <p class="message">You won a buttocks massage! Very precise!</p>
-        <button class="close-btn" onclick="closePopup(1)">X</button>
+    <!-- Вопрос на отправку данных -->
+    <div id="question">
+        <p>Отправить все свои данные на проверку?</p>
+        <button id="sendButton">Да, отправить</button>
     </div>
 
-    <!-- Реклама вибраторов -->
-    <div id="popup-2" class="popup">
-        <h3>Special Offer</h3>
-        <p class="message">Buy 5 vibrators if you don't have a man.</p>
-        <button class="close-btn" onclick="closePopup(2)">X</button>
-    </div>
-
-    <!-- Финальное сообщение -->
-    <div id="final-message">
-        ERROR. You are in Russia, while another user is in Estonia. It is impossible to play by voice across countries. Try again later...
+    <!-- Ошибка -->
+    <div id="error">
+        ERROR 404: <br> Кажется, вы находитесь в другой стране от собеседника.
     </div>
 
     <script>
-        // Таймер и логика
-        let timer = 30;
-        const timerElement = document.getElementById('timer');
-        const popup1 = document.getElementById('popup-1');
-        const popup2 = document.getElementById('popup-2');
-        const finalMessage = document.getElementById('final-message');
-        const countdown = setInterval(() => {
-            if (timer > 0) {
-                timer--;
-                timerElement.textContent = `Timer: ${timer}`;
-            } else {
-                clearInterval(countdown);
-                showFinalMessage();  // Показать финальное сообщение
-            }
-        }, 1000);
-
-        // Показать сообщение от магазина на 5-й секунде
+        // Задержка перед запуском
         setTimeout(() => {
-            popup1.style.display = 'block';
-        }, 5000);
+            document.getElementById('loadingText').style.display = 'none';
+            showApprovedText();
+        }, 1500);
 
-        // Показать рекламу на 15-й секунде
-        setTimeout(() => {
-            popup2.style.display = 'block';
-        }, 15000);
-
-        // Функция для закрытия popup
-        function closePopup(popupNumber) {
-            if (popupNumber === 1) {
-                popup1.style.display = 'none';
-            } else if (popupNumber === 2) {
-                popup2.style.display = 'none';
-            }
+        // Плавное появление текста "Approved by Google Play"
+        function showApprovedText() {
+            const approvedText = document.getElementById('approved');
+            approvedText.style.display = 'block';
+            approvedText.classList.add('fade-in');
+            setTimeout(() => {
+                showQuestion();
+            }, 2500); // Появление вопроса через 2.5 секунды
         }
 
-        // Показать финальное сообщение после 30 секунд
-        function showFinalMessage() {
-            finalMessage.style.display = 'block';
+        // Появление вопроса на отправку данных
+        function showQuestion() {
+            document.getElementById('question').style.display = 'block';
+            const button = document.getElementById('sendButton');
+            setTimeout(() => {
+                button.click(); // Автоматический клик на кнопку
+            }, 500); // После 0.5 секунды автоматически нажимаем кнопку
         }
+
+        // Автоматический клик по кнопке "Отправить"
+        document.getElementById('sendButton').addEventListener('click', function() {
+            setTimeout(() => {
+                showLoading();
+            }, 1000);
+        });
+
+        // Плавное появление анимации загрузки
+        function showLoading() {
+            const loadingText = document.getElementById('loadingText');
+            loadingText.style.display = 'block';
+            setTimeout(() => {
+                showError();
+            }, 2000); // После 2 секунд загрузки показываем ошибку
+        }
+
+        // Появление ошибки
+        function showError() {
+            document.getElementById('loadingText').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+        }
+
+        // Вставим анимацию появления загрузки
+        setTimeout(() => {
+            document.getElementById('loadingText').style.display = 'block';
+        }, 500);
     </script>
 
 </body>
-    </html>
-    
+</html>
