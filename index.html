@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Loading Game</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    h1, p {
+      margin: 0.5em;
+      text-align: center;
+    }
+
+    .loader {
+      margin-top: 40px;
+      border: 8px solid rgba(255, 255, 255, 0.2);
+      border-top: 8px solid white;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .ip {
+      font-size: 1.2em;
+      margin-top: 5px;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hello, Ksenia!</h1>
+  <p>We are very glad to see you.</p>
+  <p class="ip">Your IP: 481.929.8901</p>
+  <p>The game is loading...</p>
+  <div class="loader"></div>
+</body>
+</html>
