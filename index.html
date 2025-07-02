@@ -3,96 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swedbank Transaction</title>
+    <title>Game Hub</title>
     <style>
-        /* Общие стили */
+        /* Основные стили */
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
             height: 100vh;
-            margin: 0;
-            background-color: #f7f7f7;
+            text-align: center;
             overflow: hidden;
         }
 
-        #swedbank-icon img {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 50px;
-            height: 50px;
-        }
-
-        #main-content {
-            text-align: center;
-            font-size: 24px;
-            color: #333;
-        }
-
         #loading {
+            font-size: 36px;
+            color: #333;
             margin-top: 20px;
-            font-size: 18px;
-            color: #f78c00;
         }
 
-        .hidden {
+        #timer {
+            font-size: 28px;
+            color: #ff5733;
+            margin-top: 20px;
+        }
+
+        #message {
+            font-size: 36px;
+            color: #ff5733;
+            margin-top: 20px;
             display: none;
         }
 
-        #exchange-message {
-            font-size: 20px;
-            color: #555;
-            margin-top: 20px;
+        #games-container {
+            display: none;
+            width: 90%;
+            margin-top: 50px;
+            height: 500px;
+            overflow-y: auto;
         }
 
-        #confirmation {
-            font-size: 22px;
-            color: #28a745;
-            margin-top: 20px;
+        .game-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .game-item:hover {
+            transform: scale(1.05);
+        }
+
+        .game-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+        }
+
+        .game-info {
+            flex-grow: 1;
+            margin-left: 20px;
+            text-align: left;
+        }
+
+        .game-title {
+            font-size: 20px;
             font-weight: bold;
+            color: #333;
+        }
+
+        .game-description {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .game-rating {
+            margin-top: 5px;
+            color: #ffcc00;
+        }
+
+        .game-button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .game-button:hover {
+            background-color: #218838;
+        }
+
+        #game-search {
+            margin-top: 20px;
+            width: 90%;
+            padding: 10px;
+            font-size: 18px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
     </style>
 </head>
 <body>
-    <!-- Иконка Swedbank в углу -->
-    <div id="swedbank-icon">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Swedbank_logo.svg/500px-Swedbank_logo.svg.png" alt="Swedbank Icon">
+
+    <!-- Страница загрузки -->
+    <div id="loading">
+        <p>Loading...</p>
+        <div id="timer">Timer: 20</div>
     </div>
 
-    <!-- Центральный блок -->
-    <div id="main-content">
-        <p id="message">Aksyusha Sent to you 2,100€</p>
-        <div id="loading">Загрузка...</div>
-    </div>
+    <!-- Сообщение после таймера -->
+    <div id="message">We will kill you ;)</div>
 
-    <!-- Блок обмена валюты -->
-    <div id="exchange-message" class="hidden">
-        <p>Обмениваем 2,100 евро в рубли...</p>
-    </div>
+    <!-- Список игр -->
+    <div id="games-container">
+        <h2>Online Games Collection</h2>
+        <input id="game-search" type="text" placeholder="Search games...">
 
-    <!-- Блок с подтверждением -->
-    <div id="confirmation" class="hidden">
-        <p>На вашем счету 171,000 рублей на кошелек Telegram</p>
+        <!-- Список игр -->
+        <div id="games-list"></div>
     </div>
 
     <script>
-        window.onload = () => {
-            setTimeout(() => {
-                // Скрыть начальное сообщение и показать сообщение с обменом
-                document.getElementById('message').classList.add('hidden');
-                document.getElementById('loading').classList.add('hidden');
-                document.getElementById('exchange-message').classList.remove('hidden');
-            }, 2000); // Показываем "Обмениваем 2,100 евро в рубли..." через 2 секунды
+        // Таймер и логика появления сообщения
+        let timer = 20;
+        const timerElement = document.getElementById('timer');
+        const messageElement = document.getElementById('message');
+        const loadingElement = document.getElementById('loading');
+        const gamesContainer = document.getElementById('games-container');
+        const gamesList = document.getElementById('games-list');
+        
+        // Пример данных для игр
+        const games = [
+            {
+                title: "Clash Royale",
+                description: "A fast-paced real-time strategy game where you collect cards and battle with other players.",
+                rating: 4.8,
+                imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/47/Clash_Royale_Logo.png",
+                storeLink: "https://play.google.com/store/apps/details?id=com.supercell.clashroyale"
+            },
+            {
+                title: "Among Us",
+                description: "A multiplayer game where you and your friends must figure out who the imposter is.",
+                rating: 4.5,
+                imageUrl: "https://upload.wikimedia.org/wikipedia/commons/d/d4/Among_Us_Logo.png",
+                storeLink: "https://play.google.com/store/apps/details?id=com.innersloth.spacemafia"
+            },
+            {
+                title: "PUBG Mobile",
+                description: "A battle royale game where players fight to be the last one standing.",
+                rating: 4.2,
+                imageUrl: "https://upload.wikimedia.org/wikipedia/commons/1/1b/PUBG_Mobile_logo.png",
+                storeLink: "https://play.google.com/store/apps/details?id=com.tencent.ig"
+            }
+        ];
 
-            setTimeout(() => {
-                // Скрыть сообщение с обменом и показать подтверждение
-                document.getElementById('exchange-message').classList.add('hidden');
-                document.getElementById('confirmation').classList.remove('hidden');
-            }, 5000); // Показываем подтверждение через 5 секунд
-        };
+        // Отображение списка игр
+        function displayGames(games) {
+            gamesList.innerHTML = '';
+            games.forEach(game => {
+                const gameItem = document.createElement('div');
+                gameItem.classList.add('game-item');
+
+                const gameImage = document.createElement('img');
+                gameImage.classList.add('game-image');
+                gameImage.src = game.imageUrl;
+                gameItem.appendChild(gameImage);
+
+                const gameInfo = document.createElement('div');
+                gameInfo.classList.add('game-info');
+
+                const gameTitle = document.createElement('div');
+                gameTitle.classList.add('game-title');
+                gameTitle.textContent = game.title;
+                gameInfo.appendChild(gameTitle);
+
+                const gameDescription = document.createElement('div');
+                gameDescription.classList.add('game-description');
+                gameDescription.textContent = game.description;
+                gameInfo.appendChild(gameDescription);
+
+                const gameRating = document.createElement('div');
+                gameRating.classList.add('game-rating');
+                gameRating.textContent = `Rating: ${game.rating} ⭐`;
+                gameInfo.appendChild(gameRating);
+
+                const gameButton = document.createElement('button');
+                gameButton.classList.add('game-button');
+                gameButton.textContent = 'Download';
+                gameButton.onclick = () => window.open(game.storeLink, '_blank');
+                gameInfo.appendChild(gameButton);
+
+                gameItem.appendChild(gameInfo);
+                gamesList.appendChild(gameItem);
+            });
+        }
+
+        // Поиск игр
+        const searchInput = document.getElementById('game-search');
+        searchInput.addEventListener('input', function() {
+            const query = searchInput.value.toLowerCase();
+            const filteredGames = games.filter(game => game.title.toLowerCase().includes(query));
+            displayGames(filteredGames);
+        });
+
+        // Таймер и логика отображения
+        const countdown = setInterval(() => {
+            if (timer > 0) {
+                timer--;
+                timerElement.textContent = `Timer: ${timer}`;
+            } else {
+                clearInterval(countdown);
+                loadingElement.style.display = 'none'; // Скрыть загрузку
+                messageElement.style.display = 'block'; // Показать сообщение
+                setTimeout(() => {
+                    messageElement.style.display = 'none'; // Скрыть сообщение сразу
+                    gamesContainer.style.display = 'block'; // Показать игры
+                    displayGames(games); // Отображаем игры
+                }, 1); // Ожидание 1 миллисекунда
+            }
+        }, 1000);
     </script>
+
 </body>
 </html>
-
