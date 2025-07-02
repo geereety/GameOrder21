@@ -19,12 +19,13 @@
             text-align: center;
         }
 
-        /* Анимация загрузки */
-        .loading {
-            font-size: 24px;
+        /* Стиль анимации запуска */
+        .launching {
+            font-size: 30px;
             font-weight: bold;
             color: #333;
             display: none;
+            animation: fadeIn 1s ease-in-out;
         }
 
         /* Стиль текста "Approved by Google Play" */
@@ -123,8 +124,8 @@
 </head>
 <body>
 
-    <!-- Анимация загрузки -->
-    <div class="loading" id="loadingText">Launching...</div>
+    <!-- Стартовая анимация -->
+    <div class="launching" id="launchingText">Launching...</div>
 
     <!-- Текст "Approved by Google Play" -->
     <div id="approved">
@@ -143,57 +144,67 @@
     </div>
 
     <script>
-        // Задержка перед запуском
-        setTimeout(() => {
-            document.getElementById('loadingText').style.display = 'none';
-            showApprovedText();
-        }, 1500);
+        // Функция для показа анимации запуска
+        function showLaunchText() {
+            const launchText = document.getElementById('launchingText');
+            launchText.style.display = 'block';
 
-        // Плавное появление текста "Approved by Google Play"
+            // Скрыть текст через 1.5 секунды
+            setTimeout(() => {
+                launchText.style.display = 'none';
+                showApprovedText();
+            }, 1500); // Задержка в 1.5 секунды
+        }
+
+        // Функция для показа "Approved by Google Play"
         function showApprovedText() {
             const approvedText = document.getElementById('approved');
             approvedText.style.display = 'block';
             approvedText.classList.add('fade-in');
+
+            // После 2.5 секунд показываем вопрос
             setTimeout(() => {
                 showQuestion();
-            }, 2500); // Появление вопроса через 2.5 секунды
+            }, 2500); // Задержка перед появлением вопроса
         }
 
-        // Появление вопроса на отправку данных
+        // Функция для показа вопроса
         function showQuestion() {
-            document.getElementById('question').style.display = 'block';
-            const button = document.getElementById('sendButton');
+            const question = document.getElementById('question');
+            question.style.display = 'block';
+            
+            // Автоматическое нажатие на кнопку через 0.5 секунды
             setTimeout(() => {
-                button.click(); // Автоматический клик на кнопку
-            }, 500); // После 0.5 секунды автоматически нажимаем кнопку
+                document.getElementById('sendButton').click();
+            }, 500); // Задержка на 0.5 секунд
         }
 
-        // Автоматический клик по кнопке "Отправить"
+        // Обработчик для кнопки "Да, отправить"
         document.getElementById('sendButton').addEventListener('click', function() {
+            // Показать анимацию загрузки
             setTimeout(() => {
                 showLoading();
-            }, 1000);
+            }, 1000); // Задержка перед загрузкой
         });
 
-        // Плавное появление анимации загрузки
+        // Функция для показа анимации загрузки
         function showLoading() {
-            const loadingText = document.getElementById('loadingText');
-            loadingText.style.display = 'block';
+            document.getElementById('launchingText').style.display = 'block';
+
+            // После 2 секунд показываем ошибку
             setTimeout(() => {
                 showError();
-            }, 2000); // После 2 секунд загрузки показываем ошибку
+            }, 2000);
         }
 
-        // Появление ошибки
+        // Функция для отображения ошибки
         function showError() {
-            document.getElementById('loadingText').style.display = 'none';
+            document.getElementById('launchingText').style.display = 'none';
             document.getElementById('error').style.display = 'block';
         }
 
-        // Вставим анимацию появления загрузки
-        setTimeout(() => {
-            document.getElementById('loadingText').style.display = 'block';
-        }, 500);
+        // Запускаем начальную анимацию
+        showLaunchText();
     </script>
 
 </body>
