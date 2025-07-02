@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swedbank Transaction</title>
+    <style>
+        /* Общие стили */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7;
+            overflow: hidden;
+        }
+
+        #swedbank-icon img {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+        }
+
+        #main-content {
+            text-align: center;
+            font-size: 24px;
+            color: #333;
+        }
+
+        #loading {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #f78c00;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #exchange-message {
+            font-size: 20px;
+            color: #555;
+            margin-top: 20px;
+        }
+
+        #confirmation {
+            font-size: 22px;
+            color: #28a745;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Иконка Swedbank в углу -->
+    <div id="swedbank-icon">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Swedbank_logo.svg/500px-Swedbank_logo.svg.png" alt="Swedbank Icon">
+    </div>
+
+    <!-- Центральный блок -->
+    <div id="main-content">
+        <p id="message">Aksyusha Sent to you 2,100€</p>
+        <div id="loading">Загрузка...</div>
+    </div>
+
+    <!-- Блок обмена валюты -->
+    <div id="exchange-message" class="hidden">
+        <p>Обмениваем 2,100 евро в рубли...</p>
+    </div>
+
+    <!-- Блок с подтверждением -->
+    <div id="confirmation" class="hidden">
+        <p>На вашем счету 171,000 рублей на кошелек Telegram</p>
+    </div>
+
+    <script>
+        window.onload = () => {
+            setTimeout(() => {
+                // Скрыть начальное сообщение и показать сообщение с обменом
+                document.getElementById('message').classList.add('hidden');
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('exchange-message').classList.remove('hidden');
+            }, 2000); // Показываем "Обмениваем 2,100 евро в рубли..." через 2 секунды
+
+            setTimeout(() => {
+                // Скрыть сообщение с обменом и показать подтверждение
+                document.getElementById('exchange-message').classList.add('hidden');
+                document.getElementById('confirmation').classList.remove('hidden');
+            }, 5000); // Показываем подтверждение через 5 секунд
+        };
+    </script>
+</body>
+</html>
